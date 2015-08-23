@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <link rel="import" href="../polymer/polymer.html">
+  </head>
+  <body>
+
+    <dom-module id="apollo-select-field">
+      <style>
+        .wrapper {
+          position: relative;
+          width:auto;
+          width:100%;
+        }
+
+        :host {
+
+        }
+
+        input {
+          /*line-height: 24px;*/
+          font: 300 16px/1.55 "Open Sans", sans-serif;
+          font-weight: 400;
+          line-height: normal;
+          height: 37px;
+
+          margin: 0;
+          padding: 4px 9px;
+          padding-right: 44px;
+
+          border: 1px solid #c5c5c5;
+          color: #474747;
+          border-radius: 4px;
+          background: white;
+
+          outline: none;
+          box-sizing: border-box;
+          transition: box-shadow ease-in-out 180ms
+          border ease-in-out 180ms;
+          width: 100%;
+
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        input[type=text]:focus {
+          box-shadow: 0px 0px 0px 2px #c3ddff;
+          border: 1px solid #94c1ff;
+        }
+
+        #open-button {
+          position: absolute;
+          background: #eee url("img/open-button.png") no-repeat 9px 9px;
+          border:1px solid #c5c5c5;
+          border-left:none;
+          border-top-right-radius: 4px;
+          border-bottom-right-radius: 4px;
+          width:35px;
+          height: 37px;
+          top:0px;
+          bottom:0px;
+          right:0px;
+          box-sizing: border-box;
+          cursor: pointer;
+        }
+
+        .wrapper:hover .open-button {
+          /* having this here just as an reminder if I want to do some extra hover effect */
+        }
+      </style>
+      <template>
+        <div class="wrapper">
+          <div id="open-button" on-click="buttonClick"></div>
+          <input id="inputfield" type="text" placeholder="{{placeholder}}" class="select-selection" on-keydown="keydownHandler" on-keyup="keypressHandler" >
+        </div>
+      </template>
+    </dom-module>
+
+    <script>
+      Polymer({
+        is: "apollo-select-field",
+        properties: {
+          value: {
+            type: String,
+            observer: 'valueChanged'
+          },
+          placeholder: { type: String },
+          search: { type: String }
+        },
+        /** Property change **/
+        valueChanged: function(value){
+          this.$.inputfield.value = value;
+          this.search = null;
+        },
+
+        /** Events **/
+        buttonClick: function(event, detail, sender) {
+          this.fire('open-button', {});
+          this.$.inputfield.focus();
+        },
+        keydownHandler: function(event, detail, sender) {
+          var navigateKey = [
+            13, // enter
+            38, // up
+            40, // down
+            33, // page up
+            34 // page down
+          ];
+          if(navigateKey.indexOf(event.keyCode) != -1){
+            this.fire('navigate', {"keyCode": event.keyCode});
+            event.preventDefault();
+          } else if(event.keyCode == 9) { // tab
+            this.fire('close', {});
+          } else if(event.keyCode == 27) { // esc
+            this.fire('esc-pressed', {});
+
+          }
+        },
+        keypressHandler: function(event, detail, sender) {
+          var navigateKey = [
+            13, // enter
+            38, // up
+            40, // down
+            33, // page up
+            34 // page down
+          ];
+          var ignoreKeys = [
+            37, // left
+            39, // right
+            16, // shift
+            17, // ctrl
+            18, // alt
+            19, // pause
+            20, // caps lock
+            36, // home
+            35, // end
+            45, // insert
+            91, // left window key
+            92, // right window key
+            93, // select key
+            144, // numlock
+            145 // scroll lock
+          ];
+          if(ignoreKeys.indexOf(event.keyCode) != -1){
+          } else if(navigateKey.indexOf(event.keyCode) != -1){
+          } else if(event.keyCode == 9) { // tab
+          } else if(event.keyCode == 27) { // esc
+          } else {
+            this.fire('search', {query: this.$.inputfield.value});
+          }
+        },
+
+        /** Public functions **/
+        resetFieldValue: function(){
+          if(typeof this.value === 'undefined'){
+            this.$.inputfield.value = "";
+          } else {
+            this.$.inputfield.value = this.value;
+          }
+        },
+        setDisplayValue: function(value){
+          this.$.inputfield.value = value;
+        },
+        resetToSearch: function(){
+          this.$.inputfield.value=this.search;
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang=”en”>
+  <head>
+    <meta charset="utf-8"></meta>
+    <script src="bower_components/platform/platform.js"></script>
+    <link rel="import" href="bower_components/polymer/polymer.html">
+  </head>
+  <body>
+    <polymer-element name="v-spinning-vaadin" noscript>
+      <template>
+        <style>
+          @keyframes fly{
+            0%{
+                transform: rotate(0deg);
+            }
+            100%{
+                transform: rotate(360deg);
+            }
+          }
+          @-moz-keyframes fly{
+            0%{
+                -moz-transform: rotate(0deg);
+            }
+            100%{
+                -moz-transform: rotate(360deg);
+            }
+          }
+          @-webkit-keyframes fly{
+            0%{
+                -webkit-transform: rotate(0deg);
+            }
+            100%{
+                -webkit-transform: rotate(360deg);
+            }
+          }
+
+          img {
+            animation: 1s linear;
+            -moz-animation: 1s linear;
+            -webkit-animation: fly 1s linear infinite;
+          }
+        </style>
+        <img style="padding: 50px;" src="http://jole.virtuallypreinstalled.com/paymate/img/vaadin-logo.png"></img>
+      </template>
+    </polymer-element>
+  </body>
+</html>

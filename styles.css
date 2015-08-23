@@ -1,0 +1,7 @@
+p-select::shadow #pselect {
+  font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif;
+  font-size: 12px;
+  width:185px;
+  position:relative;
+  display:inline-block;
+}

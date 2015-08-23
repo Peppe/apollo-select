@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang=”en”>
+  <head>
+    <meta charset="utf-8"></meta>
+    <script src="bower_components/platform/platform.js"></script>
+    <link rel="import" href="bower_components/polymer/polymer.html">
+  </head>
+  <body>
+    <polymer-element name="v-image-spinner" noscript>
+      <template>
+        <style> h1 { color: orange; } </style>
+        <style>
+          @keyframes fly{
+            0%{
+                transform: rotate(0deg);
+            }
+            100%{
+                transform: rotate(360deg);
+            }
+          }
+          @-moz-keyframes fly{
+            0%{
+                -moz-transform: rotate(0deg);
+            }
+            100%{
+                -moz-transform: rotate(360deg);
+            }
+          }
+          @-webkit-keyframes fly{
+            0%{
+                -webkit-transform: rotate(0deg);
+            }
+            100%{
+                -webkit-transform: rotate(360deg);
+            }
+          }
+          ::content img, ::content h1 {
+            animation: fly 1s linear infinite;
+            -moz-animation: fly 1s linear infinite;
+            -webkit-animation: fly 1s linear infinite;
+            text-transform: uppercase;
+          }
+
+          :host {
+            animation: fly 1s linear infinite;
+            -moz-animation: fly 1s linear infinite;
+            -webkit-animation: fly 1s linear infinite;
+            text-transform: uppercase;
+          }
+        </style>
+        <content select="*"></content>
+      </template>
+    </polymer-element>
+  </body>
+</html>

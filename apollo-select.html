@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <link rel="import" href="../polymer/polymer.html">
+    <link rel="import" href="apollo-select-field.html"></link>
+    <link rel="import" href="apollo-select-dropdown.html"></link>
+  </head>
+  <body>
+    <dom-module id="apollo-select">
+      <style>
+        #pselect {
+          font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif;
+          font-size: 12px;
+          width:185px;
+          position:relative;
+          display:inline-block;
+        }
+      </style>
+      <template>
+        <div id="pselect">
+          <apollo-select-field id="field" value="{{value}}" placeholder="{{placeholder}}" on-open-button="toggleOpen" on-navigate="navigate" on-close="close" on-esc-pressed="stateEscPressed" on-search="search"></apollo-select-field>
+          <apollo-select-dropdown id="dropdown" value="{{value}}" values="{{values}}" pselect="{{this.$.pselect}}" on-reset-search-value="resetFieldValue" on-value-selected="userSelectedValue" on-close="close" on-display="setDisplayValue" on-navigate-hover="stateNavigate">
+            <content></content>
+          </apollo-select-dropdown>
+        </div>
+      </template>
+    </dom-module>
+
+    <script>
+      Polymer({
+        is: "apollo-select",
+        properties: {
+          value: {
+            type: String,
+            observer: 'valueChanged'
+          },
+          values: {
+            type: String
+          },
+          placeholder: {
+            type: String,
+            observer: 'placeholderChanged'
+          },
+          state: "initial"
+        },
+
+
+        /** Lifecycle **/
+        ready: function() {
+          this.$.dropdown.pselect = this.$.pselect;
+        },
+
+        /** Property change **/
+        valueChanged: function() {
+          if (this.value) {
+            // Do I need this? Could the index.html notice
+            // the change without firing custom events?
+            this.fire('value-changed', {value : this.value});
+          }
+        },
+        placeholderChanged: function(){
+          this.$.field.placeholder = this.placeholder;
+        },
+
+        /** Events **/
+        /* shared */
+        close: function(){
+          this.$.dropdown.close();
+          this.state = "initial";
+        },
+
+        /*  apollo-select-field events
+            on-open-button="{{toggleOpen}}"
+            on-navigate="{{navigate}}"
+            on-close="{{close}}"
+            on-esc-pressed="{{stateEscPressed}}"
+            on-search="{{search}}" */
+        toggleOpen: function(event, detail, sender){
+          this.$.dropdown.toggleOpen();
+        },
+
+        navigate: function(event){
+          this.$.dropdown.navigate(event);
+        },
+
+        stateEscPressed: function(){
+          console.log("state = " + this.state);
+          if(this.state == "search_navigate"){
+            this.state = "search";
+            this.$.field.resetToSearch();
+            this.$.dropdown.resetHighlight();
+          } else if(this.state == "search"){
+            this.state = "initial";
+            this.$.field.resetFieldValue();
+            this.$.dropdown.search = null;
+          } else if(this.state == "navigate"){
+            this.state = "initial";
+            this.$.field.resetFieldValue();
+            this.$.dropdown.resetHighlight();
+          } else {
+            this.state = "initial";
+            this.close();
+          }
+        },
+
+        search: function(event, detail, sender){
+          this.$.dropdown.search = detail.query;
+          this.$.field.search = detail.query;
+          this.state = 'search';
+        },
+
+        /* apollo-select-dropdown events
+           on-reset-search-value="{{resetFieldValue}}"
+           on-value-selected="{{userSelectedValue}}"
+           on-close="{{close}}"
+           on-display="{{setDisplayValue}}"
+           on-navigate-hover="{{stateNavigate}}" */
+
+        resetFieldValue: function(){
+          this.$.field.resetFieldValue();
+        },
+
+        userSelectedValue: function(event, detail, sender){
+          this.value = detail.selectedValue;
+          this.state = "initial";
+        },
+
+        setDisplayValue: function(event, detail, sender){
+          this.$.field.setDisplayValue(detail.value);
+          this.stateNavigate();
+        },
+
+        stateNavigate: function(){
+          if(this.state == "initial"){
+            this.state = "navigate";
+          } else if(this.state == "search"){
+            this.state = "search_navigate";
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

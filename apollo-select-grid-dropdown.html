@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <link rel="import" href="../polymer/polymer.html">
+    <link rel="import" href="../vaadin-components/vaadin-grid/vaadin-grid.html">
+  </head>
+  <body>
+
+    <dom-module id="apollo-select-grid-dropdown">
+      <style>
+        #dropdown {
+          background-color: white;
+          border: 1px solid #aaa;
+          padding:2px;
+
+          -webkit-border-radius: 5px;
+          -moz-border-radius: 5px;
+          border-radius: 5px;
+
+          position: absolute;
+          top: 38px;
+          left: 0;
+          right:0;
+          box-shadow: 1px 1px 5px #aaa;
+          z-index: 1;
+
+          overflow: hidden;
+          padding:0;
+          margin:0;
+          max-height: 0;
+          visibility: hidden;
+          /* transition: <property> <duration> <timing-function> <delay>; */
+          transition: visibility 0s linear 0.3s,
+                      max-height 0.30s ease-in-out 0s;
+        }
+
+        #dropdown.open {
+          max-height: 180px;
+          visibility:visible;
+          transition: visibility 0s linear 0s,
+                      max-height 0.30s ease-in-out 0s;
+
+        }
+
+        #dropdown > ::content li {
+          list-style-type: none;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          padding:5px;
+          cursor: pointer;
+          border-radius: 5px;
+          font-size:16px;
+          line-height: 20px;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+
+        #dropdown > ::content li.highlight {
+          background-color: #55B3FF;
+          color:white;
+        }
+
+        #dropdown > ::content li.selected {
+          background-color: #2280ff;
+          color:white;
+        }
+
+        #dropdown.overflow-auto {
+          overflow:auto;
+        }
+      </style>
+      <template>
+        <ul id="dropdown">
+          <v-grid id="grid" style="height:180px">
+            <table>
+              <colgroup>
+                <col header-text="Name">
+                <col header-text="Value">
+                <col header-text="Progress">
+              </colgroup>
+              <tbody id="tbody">
+              </tbody>
+            </table>
+          </v-grid>
+          <content></content>
+        </ul>
+      </template>
+    </dom-module>
+
+    <script>
+      Polymer({
+        is: "apollo-select-grid-dropdown",
+        properties: {
+          value: { type: String },
+          values: {
+            type: String,
+            observer: 'valuesChanged'
+          },
+          search: {
+            type: String,
+            observer: 'searchChanged'
+          },
+          pselect: {
+            type: Object
+          },
+          opening: false
+        },
+
+        closeJob: null,
+        created: function() {
+          this.filteredValues = [];
+          this.opening = false;
+        },
+        ready: function() {
+          var component = this;
+          this.$.grid.addEventListener('select', function() {
+            if(this.opening){
+              return;
+            }
+            var newValue = component.filteredValues[component.$.grid.selection.selected()];
+            component.fire('value-selected', {selectedValue : newValue});
+            component.close();
+          });
+        },
+        selectItemWithText: function(text){
+          if(!this.filteredValues || !text){
+              return;
+            }
+          for (var i = 0; i < this.filteredValues.length; i++) {
+            if(this.filteredValues[i].toString() == text.toString()){
+                this.$.grid.selection.select(i);
+                break;
+            }
+          }
+        },
+        /* TODO: this should probably check if 'value' is valid after values have changed */
+        valuesChanged: function(){
+          this.filteredValues = this.values.slice();
+          this.renderList();
+        },
+        renderList: function(){
+          var component = this;
+          this.$.grid.data.source = function(req) {
+            if(typeof component.filteredValues === 'undefined'){
+              req.success([], 0);
+            } else {
+              var array = component.filteredValues.slice(req.index, req.index + req.count);
+              req.success(array, component.filteredValues.length);
+            }
+          };
+          this.selectItemWithText(this.value);
+        },
+        toggleOpen: function() {
+          var isOpen = this.$.dropdown.classList.contains('open');
+          if(isOpen){
+            this.close();
+          } else {
+            this.open();
+          }
+        },
+        open: function(){
+          opening = true;
+          this.$.dropdown.classList.add('open');
+          this.selectItemWithText(this.value);
+          var component = this;
+          this.async(function() {
+              component.addTapListeners();
+          });
+          setTimeout(function() {
+              component.$.dropdown.classList.add('overflow-auto');
+            }, 300);
+          opening = false;
+        },
+        close: function(){
+            this.$.dropdown.classList.remove('open');
+            this.removeTapListeners();
+            var component = this;
+            component.$.dropdown.classList.remove('overflow-auto');
+            setTimeout(function() {
+              component.search = null;
+              component.fire('reset-search-value', {});
+
+            }, 300);
+        },
+        clickedOutsideListener: null,
+        clickedInsideListener: null,
+        clickedInsideSelect: function(dropdown) {
+          if(dropdown.closeJob){
+            clearTimeout(dropdown.closeJob);
+            dropdown.closeJob = null;
+          }
+        },
+        clickedOutsideDropdown: function(dropdown) {
+          /* Shadow dom effectively hides away the nodes from travesing and gives you the first parent element in the main html file. This means that the target for the click will always look like it is outside of the element. This is a workaround to that problem where you have one tap listener on document and a second one listens only on the apollo-select component only. The first one fires always where ever you click and starts a deffered job to close the overlay. The second one fires if clicked within the component and cancelles the job immediately before it can execute.
+          */
+          var context = this;
+          dropdown.closeJob = setTimeout(function() {
+            dropdown.fire('close', {});
+          }, 0);
+
+        },
+        addTapListeners: function(){
+          var component = this;
+          document.currentPSelect = this;
+
+          this.clickedOutsideListener = function clickedOutsideListener() {
+            component.clickedOutsideDropdown(component);
+          }
+          this.clickedInsideListener = function clickedInsideListener() {
+            component.clickedInsideSelect(component);
+          }
+
+
+          setTimeout(function(){
+            document.addEventListener('click', component.clickedOutsideListener, true);
+            component.pselect.addEventListener('click', component.clickedInsideListener, false);
+          }, 0);
+        },
+        removeTapListeners: function(){
+          document.removeEventListener('click', this.clickedOutsideListener, true);
+          this.pselect.removeEventListener('click', this.clickedInsideListener, false);
+        },
+        _makeBoundListener: function(methodName) {
+          var self = this, method = this[methodName];
+          if (!method) {
+            return;
+          }
+          var bound = '_bound' + methodName;
+          if (!this[bound]) {
+            this[bound] = function(e) {
+              method.call(self, e);
+            };
+          }
+          return this[bound];
+        },
+        searchChanged: function(newvalue) {
+          if(newvalue !== null){
+            this.open();
+            var newArray = [];
+            for (var i = 0; i < this.values.length; i++) {
+              var value = this.values[i];
+              if(value.indexOf(newvalue) > -1){
+                newArray.push(value);
+              }
+            }
+            this.filteredValues = newArray;
+          } else {
+            this.filteredValues = this.values;
+          }
+          this.renderList();
+        },
+        navigate: function(event){
+          if(!this.$.dropdown.classList.contains('open')){
+            this.open();
+          } else{
+            var keyCode = event.detail.keyCode;
+                 if(keyCode == 38){ this.move(-1); }      // up
+            else if(keyCode == 40){ this.move(1); }       // down
+            else if(keyCode == 33){ this.move(-10); }     // page up
+            else if(keyCode == 34){ this.move(10); }      // page down
+            else if(keyCode == 13){ this.selectOnEnterPress(); } // enter
+          }
+        },
+        move: function(steps){
+          var listItems = this.$.dropdown.getElementsByTagName('li');
+          var highlighted = this.$.dropdown.getElementsByClassName('highlight');
+          var selected = this.$.dropdown.getElementsByClassName('selected');
+          var array = Array.prototype.slice.call(listItems);
+          if(array.length === 0){
+            return;
+          }
+          var newIndex = 0;
+          if(highlighted[0]){
+            newIndex = array.indexOf(highlighted[0]) + steps;
+          } else if(selected[0]){
+            newIndex = array.indexOf(selected[0]) + steps;
+          }
+
+          if(newIndex <= 0){
+            newIndex = 0;
+          } else if(newIndex > array.length-1){
+            newIndex = array.length-1;
+          }
+          this.highlightRow(array[newIndex], true);
+          this.fire('display', {value : array[newIndex].textContent});
+
+        },
+        highlightRow: function(element, scroll){
+          var highlighted = this.$.dropdown.getElementsByClassName('highlight');
+          for (var i = 0; i < highlighted.length; i++) {
+            highlighted[i].classList.remove('highlight');
+          }
+          if(element){
+            element.classList.add("highlight");
+            if(scroll){
+              this.scrollIntoView(element);
+            }
+          }
+        },
+        scrollIntoView: function(element){
+          var elementRect = element.getBoundingClientRect();
+          var dropdownRect = this.$.dropdown.getBoundingClientRect();
+          if((elementRect.top - dropdownRect.top)<0){
+            element.scrollIntoView(true);
+          } else if((elementRect.bottom - dropdownRect.top - 1) > this.$.dropdown.clientHeight){
+            element.scrollIntoView(false);
+          }
+        },
+        resetHighlight: function(){
+          var selected = this.$.dropdown.getElementsByClassName('selected');
+          this.highlightRow(selected[0], true);
+        },
+        selectOnEnterPress: function(){
+          var selected = this.$.dropdown.getElementsByClassName('highlight');
+          if(selected.length > 0){
+            this.fire('value-selected', {selectedValue : selected[0].textContent});
+            this.close();
+          }
+        }
+    });
+    </script>
+  </body>
+</html>

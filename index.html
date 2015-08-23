@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="apollo-select.html"></link>
+    <link rel="import" href="apollo-select-grid.html"></link>
+    <title>apollo-select</title>
+    <style>
+      span { margin-left:50px; }
+    </style>
+  </head>
+  <body>
+    <div id="section-javascript">
+      <p>The options are added with javascript</p>
+      <apollo-select id="my-select"></apollo-select>
+      <span class="value-field">Value: </span>
+    </div>
+
+    <div id="section-short">
+      <p>Another shorter select</p>
+      <apollo-select id="short-select"></apollo-select>
+      <span class="value-field">Value: </span>
+    </div>
+
+    <div id="section-grid">
+      <p>Dropdown as a grid!</p>
+      <apollo-select-grid id="grid-select"></apollo-select-grid>
+      <span class="value-field">Value: </span>
+    </div>
+    <!--
+    <div id="section-inline">
+      <p>inline values</p>
+      <apollo-select id="short-select" values="foo, bar"></apollo-select>
+      <span class="value-field">Value: </span>
+    </div>
+    -->
+
+    <!-- Light DOM version is badly broken -->
+    <!--
+    <div id="section-light-dom">
+      <p>Controlling the select with Light DOM. However, this one doesn't work very well right now.</p>
+      <apollo-select id="light-dom-select" placeholder="what would you like to do today?">
+        <li>One</li>
+        <li>More</li>
+        <li>Time</li>
+      </apollo-select>
+      <span class="value-field">Value: </span>
+    </div>
+    -->
+
+
+    <div id="section-separate">
+      <p>The input field apollo-select-field shown separately</p>
+      <apollo-select-field id="select-field" value="foo" placeholder="some placeholder"></apollo-select-field>
+      <p>The dropdown apollo-select-dropdown shown separately <button id="separate-button">Open</button></p>
+      <div style="position:relative">
+        <apollo-select-dropdown id="select-dropdown" value="bar"></apollo-select-dropdown>
+      </div>
+    </div>
+
+
+    <script type="text/javascript">
+      window.onload = function() {
+        var pSelectJS = document.querySelector('#section-javascript apollo-select')
+        pSelectJS.values = [
+          '\u00a0',
+          "anything",
+          "anything else",
+          "something else",
+          "still a bit longer text here for testing purposes",
+          "more",
+          "Vaadin",
+          "rocks",
+          "select",
+          "component",
+          "still need a bit",
+          "something else",
+          "how much more",
+          "can we add",
+          "to this select"
+        ];
+        pSelectJS.placeholder = "select a value";
+        pSelectJS.addEventListener('value-changed', function(e) {
+          document.querySelector('#section-javascript span').innerHTML='Value: ' + e.detail.value;
+        });
+
+
+        var short = document.querySelector('#section-short apollo-select');
+        short.values = [
+          '\u00a0',
+          "shorter",
+          "version",
+          "here",
+        ];
+        short.value="version";
+        short.addEventListener('value-changed', function(e) {
+          document.querySelector('#section-short span').innerHTML='Value: ' + e.detail.value;
+        });
+
+        var grid = document.querySelector('#section-grid apollo-select-grid');
+        var griddata = [
+             [ "Project A", 10000, 0.8 ],
+             [ "Project B", 87654, 0.2 ],
+             [ "Project C", 12999, 0.6 ],
+             [ "Project D", 94839, 0.3 ],
+             [ "Project E", 27382, 0.1 ],
+             [ "Project F", 10283, 0.6 ],
+             [ "Project G", 29743, 0.2 ],
+             [ "Project H", 29437, 0.4 ],
+             [ "Project I", 64843, 0.6 ],
+             [ "Project J", 20182, 0.8 ],
+             [ "Project K", 20128, 0.3 ],
+             [ "Project L", 10383, 0.6 ],
+             [ "Project M", 02834, 0.4 ],
+             [ "Project N", 12094, 0.1 ],
+             [ "Project O", 37439, 0.8 ],
+             ];
+        grid.values = griddata;
+        grid.addEventListener('value-changed', function(e) {
+          document.querySelector('#section-grid span').innerHTML='Value: ' + e.detail.value;
+        });
+
+
+        var separateDropdown = document.querySelector('#select-dropdown');
+        var dropdownButton = document.querySelector('#separate-button');
+        var open = false;
+        dropdownButton.addEventListener('click', function() {
+            if(open){
+              separateDropdown.close();
+              open = false;
+            } else {
+              separateDropdown.open();
+              open = true;
+            }
+        }, false);
+
+        separateDropdown.values = [
+          "foo",
+          "bar",
+          "baz"
+        ];
+      };
+
+
+
+      /*document.querySelector('#section-datefield p-date-field').placeholder = "select a value";*/
+      /*document.querySelector('#section-light-dom apollo-select').addEventListener('value-changed', function(e) {
+        document.querySelector('#section-light-dom span').innerHTML='Value: ' + e.detail.value;
+      });*/
+    </script>
+    <script>
+      console.log('   _____                                           ._.');
+      console.log('  /  _  \\__  _  __ ____   __________   _____   ____| |');
+      console.log(' /  /_\\  \\ \\/ \\/ // __ \\ /  ___/  _ \\ /     \\_/ __ \\ |');
+      console.log('/    |    \\     /\\  ___/ \\___ (  <_> )  Y Y  \\  ___/\\|');
+      console.log('\\____|__  /\\/\\_/  \\___  >____  >____/|__|_|  /\\___  >_');
+      console.log('        \\/            \\/     \\/            \\/     \\/\\/');
+    </script>
+  </body>
+</html>
