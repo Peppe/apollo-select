@@ -7,27 +7,73 @@
     <link rel="import" href="apollo-select-grid.html"></link>
     <title>apollo-select</title>
     <style>
-      span { margin-left:50px; }
+      body {
+        margin-left: 50px;
+        margin-top: 50px;
+      }
+      .caption {
+        margin-right:50px;
+        display:inline-block;
+        width:300px;
+      }
+
+      @font-face {
+        font-family: 'Vaadin-Icons';
+        src: url('fonts/Vaadin-Icons.eot');
+        src: url('fonts/Vaadin-Icons.eot?#iefix') format('embedded-opentype'),
+             url('fonts/Vaadin-Icons.woff') format('woff'),
+             url('fonts/Vaadin-Icons.ttf') format('truetype'),
+             url('fonts/Vaadin-Icons.svg#icomoon') format('svg');
+      }
+
+      .icon {
+        font-family: Vaadin-Icons;
+        font-size: 16px;
+        speak: none;
+        font-weight: normal;
+        font-variant: normal;
+        font-style: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+      }
     </style>
   </head>
   <body>
     <div id="section-javascript">
-      <p>The options are added with javascript</p>
+      <span class="caption">The options are added with javascript</span>
       <apollo-select id="my-select"></apollo-select>
-      <span class="value-field">Value: </span>
+
+      <div class="value-field">Value: </div>
     </div>
+    <p>&nbsp;</p>
 
     <div id="section-short">
-      <p>Another shorter select</p>
+      <span class="caption">Another shorter select</span>
       <apollo-select id="short-select"></apollo-select>
-      <span class="value-field">Value: </span>
+      <div class="value-field">Value: </div>
     </div>
+    <p>&nbsp;</p>
+
+    <div id="section-messy">
+      <span style="vertical-align:top" class="caption">Icons and captions</span>
+      <div style="display:inline-block;margin-left:-48px;">
+        <i style="display:inline-block;color: rgba(0, 0, 0, 0.54);padding-right:20px;padding:16px;" id="messy-icon" class="icon">&#xe7e6;</i>
+        <div style="display:inline-block">
+          <div style="line-height:16px;font-size:14px;color: rgba(0, 0, 0, 0.26);" id="messy-caption">State</div>
+          <apollo-select id="short-select"></apollo-select>
+        </div>
+      </div>
+      <div class="value-field">Value: </div>
+    </div>
+    <p>&nbsp;</p>
 
     <div id="section-grid">
-      <p>Dropdown as a grid!</p>
+      <span class="caption">Dropdown as a grid!</span>
       <apollo-select-grid id="grid-select"></apollo-select-grid>
-      <span class="value-field">Value: </span>
+      <div class="value-field">Value: </div>
     </div>
+    <p>&nbsp;</p>
     <!--
     <div id="section-inline">
       <p>inline values</p>
@@ -51,9 +97,10 @@
 
 
     <div id="section-separate">
-      <p>The input field apollo-select-field shown separately</p>
-      <apollo-select-field id="select-field" value="foo" placeholder="some placeholder"></apollo-select-field>
-      <p>The dropdown apollo-select-dropdown shown separately <button id="separate-button">Open</button></p>
+      <span class="caption">The input field apollo-select-field shown separately</span>
+      <apollo-select-field style="display:inline-block" id="select-field" value="foo" placeholder="some placeholder"></apollo-select-field>
+      <p>&nbsp;</p>
+      <span class="caption">The dropdown apollo-select-dropdown shown separately <button id="separate-button">Open</button></span>
       <div style="position:relative">
         <apollo-select-dropdown id="select-dropdown" value="bar"></apollo-select-dropdown>
       </div>
@@ -82,7 +129,7 @@
         ];
         pSelectJS.placeholder = "select a value";
         pSelectJS.addEventListener('value-changed', function(e) {
-          document.querySelector('#section-javascript span').innerHTML='Value: ' + e.detail.value;
+          document.querySelector('#section-javascript .value-field').innerHTML='Value: ' + e.detail.value;
         });
 
 
@@ -95,7 +142,33 @@
         ];
         short.value="version";
         short.addEventListener('value-changed', function(e) {
-          document.querySelector('#section-short span').innerHTML='Value: ' + e.detail.value;
+          document.querySelector('#section-short .value-field').innerHTML='Value: ' + e.detail.value;
+        });
+
+
+        var messy = document.querySelector('#section-messy apollo-select');
+        messy.values = [
+          '\u00a0',
+          "shorter",
+          "version",
+          "here",
+        ];
+        messy.value="version";
+        messy.addEventListener('value-changed', function(e) {
+          document.querySelector('#section-messy .value-field').innerHTML='Value: ' + e.detail.value;
+        });
+
+        var icon = document.querySelector('#messy-icon');
+        var caption = document.querySelector('#messy-caption');
+
+        document.querySelector('#section-messy apollo-select input').addEventListener("focus", function() {
+          icon.style.color = "#00b4f0";
+          caption.style.color = "#00b4f0";
+        });
+
+        document.querySelector('#section-messy apollo-select input').addEventListener("blur", function() {
+          icon.style.color = "rgba(0, 0, 0, 0.54)";
+          caption.style.color = "rgba(0, 0, 0, 0.26)";
         });
 
         var grid = document.querySelector('#section-grid apollo-select-grid');
@@ -118,7 +191,7 @@
              ];
         grid.values = griddata;
         grid.addEventListener('value-changed', function(e) {
-          document.querySelector('#section-grid span').innerHTML='Value: ' + e.detail.value;
+          document.querySelector('#section-grid .value-field').innerHTML='Value: ' + e.detail.value;
         });
 
 

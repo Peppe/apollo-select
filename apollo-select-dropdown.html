@@ -12,22 +12,17 @@
         #dropdown {
           background-color: white;
           border: 1px solid #aaa;
-          padding:2px;
-
-          -webkit-border-radius: 5px;
-          -moz-border-radius: 5px;
-          border-radius: 5px;
+          padding:8px 0px;
+          margin:0;
 
           position: absolute;
-          top: 38px;
+          top: 32px;
           left: 0;
           right:0;
           box-shadow: 1px 1px 5px #aaa;
           z-index: 1;
 
           overflow: hidden;
-          padding:0;
-          margin:0;
           max-height: 0;
           visibility: hidden;
           /* transition: <property> <duration> <timing-function> <delay>; */
@@ -36,7 +31,7 @@
         }
 
         #dropdown.open {
-          max-height: 180px;
+          max-height: 192px;
           visibility:visible;
           transition: visibility 0s linear 0s,
                       max-height 0.30s ease-in-out 0s;
@@ -48,11 +43,11 @@
           text-overflow: ellipsis;
           white-space: nowrap;
           overflow: hidden;
-          padding:5px;
+          padding:0 24px;
+          margin:0;
           cursor: pointer;
-          border-radius: 5px;
           font-size:16px;
-          line-height: 20px;
+          line-height: 48px;
           -webkit-user-select: none;
           -moz-user-select: none;
           -ms-user-select: none;
@@ -60,13 +55,11 @@
         }
 
         #dropdown > ::content li.highlight {
-          background-color: #55B3FF;
-          color:white;
+          background-color: #eeeeee;
         }
 
         #dropdown > ::content li.selected {
-          background-color: #2280ff;
-          color:white;
+          background-color: #eeeeee;
         }
 
         #dropdown.overflow-auto {
@@ -93,7 +86,7 @@
             type: String,
             observer: 'searchChanged'
           },
-          pselect: {
+          apolloselect: {
             type: Object
           }
         },
@@ -101,7 +94,7 @@
         closeJob: null,
         created: function() {
           this.filteredValues = [];
-          this.pselect = this;
+          this.apolloselect = this;
         },
         selectItemWithText: function(text){
           var selectedItems = this.$.dropdown.getElementsByClassName("selected");
@@ -201,7 +194,7 @@
         },
         addTapListeners: function(){
           var component = this;
-          document.currentPSelect = this;
+          document.currentApolloSelect = this;
 
           this.clickedOutsideListener = function clickedOutsideListener() {
             component.clickedOutsideDropdown(component);
@@ -213,12 +206,12 @@
 
           setTimeout(function(){
             document.addEventListener('click', component.clickedOutsideListener, true);
-            component.pselect.addEventListener('click', component.clickedInsideListener, false);
+            component.apolloselect.addEventListener('click', component.clickedInsideListener, false);
           }, 0);
         },
         removeTapListeners: function(){
           document.removeEventListener('click', this.clickedOutsideListener, true);
-          this.pselect.removeEventListener('click', this.clickedInsideListener, false);
+          this.apolloselect.removeEventListener('click', this.clickedInsideListener, false);
         },
         _makeBoundListener: function(methodName) {
           var self = this, method = this[methodName];
