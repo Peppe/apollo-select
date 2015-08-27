@@ -206,12 +206,16 @@
 
           setTimeout(function(){
             document.addEventListener('click', component.clickedOutsideListener, true);
-            component.apolloselect.addEventListener('click', component.clickedInsideListener, false);
+            if(component.apolloselect){
+              component.apolloselect.addEventListener('click', component.clickedInsideListener, false);
+            }
           }, 0);
         },
         removeTapListeners: function(){
           document.removeEventListener('click', this.clickedOutsideListener, true);
-          this.apolloselect.removeEventListener('click', this.clickedInsideListener, false);
+          if(this.apolloselect){
+            this.apolloselect.removeEventListener('click', this.clickedInsideListener, false);
+          }
         },
         _makeBoundListener: function(methodName) {
           var self = this, method = this[methodName];

@@ -170,7 +170,7 @@
           icon.style.color = "rgba(0, 0, 0, 0.54)";
           caption.style.color = "rgba(0, 0, 0, 0.26)";
         });
-
+        /*
         var grid = document.querySelector('#section-grid apollo-select-grid');
         var griddata = [
              [ "Project A", 10000, 0.8 ],
@@ -193,11 +193,12 @@
         grid.addEventListener('value-changed', function(e) {
           document.querySelector('#section-grid .value-field').innerHTML='Value: ' + e.detail.value;
         });
-
+        */
 
         var separateDropdown = document.querySelector('#select-dropdown');
         var dropdownButton = document.querySelector('#separate-button');
         var open = false;
+        separateDropdown.component=this;
         dropdownButton.addEventListener('click', function() {
             if(open){
               separateDropdown.close();
