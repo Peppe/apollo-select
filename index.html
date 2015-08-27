@@ -16,7 +16,6 @@
         display:inline-block;
         width:300px;
       }
-
       @font-face {
         font-family: 'Vaadin-Icons';
         src: url('fonts/Vaadin-Icons.eot');
@@ -25,7 +24,6 @@
              url('fonts/Vaadin-Icons.ttf') format('truetype'),
              url('fonts/Vaadin-Icons.svg#icomoon') format('svg');
       }
-
       .icon {
         font-family: Vaadin-Icons;
         font-size: 16px;
@@ -67,13 +65,13 @@
       <div class="value-field">Value: </div>
     </div>
     <p>&nbsp;</p>
-
+<!--
     <div id="section-grid">
       <span class="caption">Dropdown as a grid!</span>
       <apollo-select-grid id="grid-select"></apollo-select-grid>
       <div class="value-field">Value: </div>
     </div>
-    <p>&nbsp;</p>
+    <p>&nbsp;</p>-->
     <!--
     <div id="section-inline">
       <p>inline values</p>
@@ -131,8 +129,6 @@
         pSelectJS.addEventListener('value-changed', function(e) {
           document.querySelector('#section-javascript .value-field').innerHTML='Value: ' + e.detail.value;
         });
-
-
         var short = document.querySelector('#section-short apollo-select');
         short.values = [
           '\u00a0',
@@ -144,8 +140,6 @@
         short.addEventListener('value-changed', function(e) {
           document.querySelector('#section-short .value-field').innerHTML='Value: ' + e.detail.value;
         });
-
-
         var messy = document.querySelector('#section-messy apollo-select');
         messy.values = [
           '\u00a0',
@@ -157,20 +151,17 @@
         messy.addEventListener('value-changed', function(e) {
           document.querySelector('#section-messy .value-field').innerHTML='Value: ' + e.detail.value;
         });
-
         var icon = document.querySelector('#messy-icon');
         var caption = document.querySelector('#messy-caption');
-
         document.querySelector('#section-messy apollo-select input').addEventListener("focus", function() {
           icon.style.color = "#00b4f0";
           caption.style.color = "#00b4f0";
         });
-
         document.querySelector('#section-messy apollo-select input').addEventListener("blur", function() {
           icon.style.color = "rgba(0, 0, 0, 0.54)";
           caption.style.color = "rgba(0, 0, 0, 0.26)";
         });
-
+        /*
         var grid = document.querySelector('#section-grid apollo-select-grid');
         var griddata = [
              [ "Project A", 10000, 0.8 ],
@@ -193,11 +184,11 @@
         grid.addEventListener('value-changed', function(e) {
           document.querySelector('#section-grid .value-field').innerHTML='Value: ' + e.detail.value;
         });
-
-
+        */
         var separateDropdown = document.querySelector('#select-dropdown');
         var dropdownButton = document.querySelector('#separate-button');
         var open = false;
+        separateDropdown.component=this;
         dropdownButton.addEventListener('click', function() {
             if(open){
               separateDropdown.close();
@@ -207,16 +198,12 @@
               open = true;
             }
         }, false);
-
         separateDropdown.values = [
           "foo",
           "bar",
           "baz"
         ];
       };
-
-
-
       /*document.querySelector('#section-datefield p-date-field').placeholder = "select a value";*/
       /*document.querySelector('#section-light-dom apollo-select').addEventListener('value-changed', function(e) {
         document.querySelector('#section-light-dom span').innerHTML='Value: ' + e.detail.value;

@@ -1,0 +1,29 @@
+{
+  "name": "apollo-select",
+  "authors": [
+    "Jens Jansson <jens.jansson@vaadin.com>"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#v1.0.9",
+    "vaadin-components": "0.3.0-beta6"
+  },
+  "homepage": "https://github.com/Peppe/apollo-select",
+  "_release": "ac1bbabd3c",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "ac1bbabd3ca1c0e378f577a19e04c9701c69a5ef"
+  },
+  "_source": "git://github.com/Peppe/apollo-select.git",
+  "_target": "*",
+  "_originalSource": "Peppe/apollo-select",
+  "_direct": true
+}

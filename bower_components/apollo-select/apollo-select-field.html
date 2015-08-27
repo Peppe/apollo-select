@@ -8,23 +8,8 @@
 
     <dom-module id="apollo-select-field">
       <style>
-
-        .wrapper {
-          padding-right: 2px;
-          margin: 0px;
-          margin-bottom: 8px;
-          position:relative;
-        }
-        .wrapper:focus {
-          position: relative;
-          width:auto;
-          width:100%;
-          outline: 0;
-
-        }
-
         :host {
-
+          position: relative;
         }
 
         input {
@@ -37,7 +22,9 @@
           margin: 0;
           margin-bottom: 1px;
           padding: 0;
-          padding-left:2px;
+          padding-left:0px;
+          padding-right:20px;
+
           border: none;
           border-bottom: 1px solid #c5c5c5;
           color: #474747;
@@ -45,17 +32,12 @@
           background: white;
 
           outline: none;
-
-          transition: box-shadow ease-in-out 180ms
-          border ease-in-out 180ms;
-          width: 100%;
-
           text-overflow: ellipsis;
           white-space: nowrap;
           overflow: hidden;
         }
 
-        input[type=text]:focus {
+        input:focus {
           margin-bottom:0;
           border-bottom: 2px solid #00b4f0;
           outline:none;
@@ -69,7 +51,6 @@
           position: absolute;
           border:none;
           width:16px;
-          line-height: 30px;
           top:0;
           right:0;
           padding-right:2px;
@@ -86,12 +67,6 @@
           -webkit-font-smoothing: antialiased;
         }
 
-        #open-button:focus {
-          border:none;
-          border-bottom: 1px solid #c5c5c5;
-
-        }
-
         @font-face {
             font-family: 'Vaadin-Icons';
             src: url('fonts/Vaadin-Icons.eot');
@@ -100,7 +75,6 @@
                  url('fonts/Vaadin-Icons.ttf') format('truetype'),
                  url('fonts/Vaadin-Icons.svg#icomoon') format('svg');
         }
-
 
         #open-button i {
           display: inline-block;
@@ -111,10 +85,8 @@
         }
       </style>
       <template>
-        <div class="wrapper">
-          <input id="inputfield" type="text" placeholder="{{placeholder}}" class="select-selection" on-keydown="keydownHandler" on-keyup="keypressHandler" >
-          <div id="open-button" on-click="buttonClick">&#xe7bc;</div>
-        </div>
+        <input id="inputfield" type="text" placeholder="{{placeholder}}" class="select-selection" on-keydown="keydownHandler" on-keyup="keypressHandler" >
+        <div id="open-button" on-click="buttonClick">&#xe7bc;</div>
       </template>
     </dom-module>
 

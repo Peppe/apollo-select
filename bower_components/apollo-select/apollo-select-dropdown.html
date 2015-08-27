@@ -35,10 +35,12 @@
           visibility:visible;
           transition: visibility 0s linear 0s,
                       max-height 0.30s ease-in-out 0s;
-
         }
 
-        #dropdown > ::content li {
+        #dropdown.overflow-auto {
+          overflow:auto;
+        }
+        .item {
           list-style-type: none;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -54,22 +56,21 @@
           user-select: none;
         }
 
-        #dropdown > ::content li.highlight {
+        .item.highlight {
           background-color: #eeeeee;
         }
 
-        #dropdown > ::content li.selected {
+        .item.selected {
           background-color: #eeeeee;
         }
 
-        #dropdown.overflow-auto {
-          overflow:auto;
-        }
       </style>
       <template>
-        <ul id="dropdown">
-          <content></content>
-        </ul>
+        <div id="dropdown">
+          <template id="itemList" is="dom-repeat" items="{{filteredValues}}">
+            <div class$="{{isSelected(item)}}" on-click="itemClicked" on-mouseover="mouseOver">{{item}}</div>
+          </template>
+      </div>
       </template>
     </dom-module>
 
@@ -77,72 +78,71 @@
       Polymer({
         is: "apollo-select-dropdown",
         properties: {
-          value: { type: String },
+          value: {
+            type: String,
+            observer: 'valueChanged'
+          },
           values: {
             type: String,
+            notify: true,
             observer: 'valuesChanged'
           },
           search: {
             type: String,
             observer: 'searchChanged'
           },
+          filteredValues: {
+            type: Array,
+            value: function() { return []; }
+          },
           apolloselect: {
-            type: Object
+            type: Object,
+          }
+
+        },
+        itemClicked: function(e) {
+          this.fire('value-selected', {selectedValue : e.model.item});
+          this.close();
+        },
+        mouseOver: function(event) {
+          /** A mouse event is also fired if the user navigates with keyboard, which
+              causes a scroll to happen and the mouse pointer happens to be on top
+              of the dropdown. To not make the highlight jump, we check if the pointer
+              actually moved when the mouse event was fired **/
+          if(event.movementX !==0 || event.movementY !== 0){
+            // Move highlight to the row the the pointer is pointing at
+            this.highlightRow(event.target, false);
+            this.fire('display', {value : event.target.textContent});
           }
         },
-
-        closeJob: null,
-        created: function() {
-          this.filteredValues = [];
-          this.apolloselect = this;
+        isSelected: function(item) {
+          if(this.value === item) {
+            return 'item selected';
+          } else {
+            return 'item no';
+          }
         },
+        closeJob: null,
         selectItemWithText: function(text){
           var selectedItems = this.$.dropdown.getElementsByClassName("selected");
           for (var i = 0; i < selectedItems.length; i++) {
             selectedItems[i].classList.remove('selected');
           }
-          var elements = this.$.dropdown.getElementsByTagName("li");
+
+          var elements = this.$.dropdown.getElementsByClassName("item");
           for (i = 0; i < elements.length; i++) {
             if (elements[i].textContent == text) {
               elements[i].classList.add('selected');
-              return;
+              break;
             }
           }
+        },
+        valueChanged: function(){
+          this.$.itemList.render();
         },
         /* TODO: this should probably check if 'value' is valid after values have changed */
         valuesChanged: function(){
           this.filteredValues = this.values.slice();
-          this.renderList();
-        },
-        renderList: function(){
-          // Clear list of old values
-          while (this.$.dropdown.firstChild) {
-              this.$.dropdown.removeChild(this.$.dropdown.firstChild);
-          }
-          // Add all the new ones to the list
-          var component = this;
-          for (var i = 0; i < this.filteredValues.length; i++) {
-            var node = document.createElement("li");
-            var textnode = document.createTextNode(this.filteredValues[i]);
-            node.appendChild(textnode);
-            this.$.dropdown.appendChild(node);
-            node.addEventListener('click', function() {
-                component.fire('value-selected', {selectedValue : this.textContent});
-                component.close();
-              }, false);
-            node.addEventListener('mouseover', function(event) {
-
-              /** A mouse event is also fired if the user navigates with keyboard, which
-                  causes a scroll to happen and the mouse pointer happens to be on top
-                  of the dropdown. To not make the highlight jump, we check if the pointer
-                  actually moved when the mouse event was fired **/
-              if(event.movementX !==0 || event.movementY !== 0){
-                // Move highlight to the row the the pointer is pointing at
-                component.highlightRow(this, false);
-                component.fire('display', {value : this.textContent});
-              }
-            }, false);
-          };
           this.selectItemWithText(this.value);
         },
         toggleOpen: function() {
@@ -206,12 +206,16 @@
 
           setTimeout(function(){
             document.addEventListener('click', component.clickedOutsideListener, true);
-            component.apolloselect.addEventListener('click', component.clickedInsideListener, false);
+            if(component.apolloselect){
+              component.apolloselect.addEventListener('click', component.clickedInsideListener, false);
+            }
           }, 0);
         },
         removeTapListeners: function(){
           document.removeEventListener('click', this.clickedOutsideListener, true);
-          this.apolloselect.removeEventListener('click', this.clickedInsideListener, false);
+          if(this.apolloselect){
+            this.apolloselect.removeEventListener('click', this.clickedInsideListener, false);
+          }
         },
         _makeBoundListener: function(methodName) {
           var self = this, method = this[methodName];
@@ -240,7 +244,6 @@
           } else {
             this.filteredValues = this.values;
           }
-          this.renderList();
         },
         navigate: function(event){
           if(!this.$.dropdown.classList.contains('open')){
@@ -255,7 +258,7 @@
           }
         },
         move: function(steps){
-          var listItems = this.$.dropdown.getElementsByTagName('li');
+          var listItems = this.$.dropdown.getElementsByClassName('item');
           var highlighted = this.$.dropdown.getElementsByClassName('highlight');
           var selected = this.$.dropdown.getElementsByClassName('selected');
           var array = Array.prototype.slice.call(listItems);
