@@ -8,14 +8,8 @@
 
     <dom-module id="apollo-select-field">
       <style>
-        .wrapper {
-          position: relative;
-          width:auto;
-          width:100%;
-        }
-
         :host {
-
+          position: relative;
         }
 
         input {
@@ -23,58 +17,76 @@
           font: 300 16px/1.55 "Open Sans", sans-serif;
           font-weight: 400;
           line-height: normal;
-          height: 37px;
+          height: 30px;
 
           margin: 0;
-          padding: 4px 9px;
-          padding-right: 44px;
+          margin-bottom: 1px;
+          padding: 0;
+          padding-left:0px;
+          padding-right:20px;
 
-          border: 1px solid #c5c5c5;
+          border: none;
+          border-bottom: 1px solid #c5c5c5;
           color: #474747;
-          border-radius: 4px;
+
           background: white;
 
           outline: none;
-          box-sizing: border-box;
-          transition: box-shadow ease-in-out 180ms
-          border ease-in-out 180ms;
-          width: 100%;
-
           text-overflow: ellipsis;
           white-space: nowrap;
           overflow: hidden;
         }
 
-        input[type=text]:focus {
-          box-shadow: 0px 0px 0px 2px #c3ddff;
-          border: 1px solid #94c1ff;
+        input:focus {
+          margin-bottom:0;
+          border-bottom: 2px solid #00b4f0;
+          outline:none;
+        }
+
+        input:focus ~ #open-button {
+          color: rgba(0, 0, 0, 0.54);
         }
 
         #open-button {
           position: absolute;
-          background: #eee url("img/open-button.png") no-repeat 9px 9px;
-          border:1px solid #c5c5c5;
-          border-left:none;
-          border-top-right-radius: 4px;
-          border-bottom-right-radius: 4px;
-          width:35px;
-          height: 37px;
-          top:0px;
-          bottom:0px;
-          right:0px;
-          box-sizing: border-box;
+          border:none;
+          width:16px;
+          top:0;
+          right:0;
+          padding-right:2px;
           cursor: pointer;
+          color: rgba(0, 0, 0, 0.26);
+          font-family: Vaadin-Icons;
+          font-size: 16px;
+          speak: none;
+          font-weight: normal;
+          font-variant: normal;
+          font-style: normal;
+          text-transform: none;
+
+          -webkit-font-smoothing: antialiased;
         }
 
-        .wrapper:hover .open-button {
-          /* having this here just as an reminder if I want to do some extra hover effect */
+        @font-face {
+            font-family: 'Vaadin-Icons';
+            src: url('fonts/Vaadin-Icons.eot');
+            src: url('fonts/Vaadin-Icons.eot?#iefix') format('embedded-opentype'),
+                 url('fonts/Vaadin-Icons.woff') format('woff'),
+                 url('fonts/Vaadin-Icons.ttf') format('truetype'),
+                 url('fonts/Vaadin-Icons.svg#icomoon') format('svg');
+        }
+
+        #open-button i {
+          display: inline-block;
+          margin-top: 7px;
+          margin-bottom: 7px;
+          width:16px;
+          height:16px;
         }
       </style>
       <template>
-        <div class="wrapper">
-          <div id="open-button" on-click="buttonClick"></div>
-          <input id="inputfield" type="text" placeholder="{{placeholder}}" class="select-selection" on-keydown="keydownHandler" on-keyup="keypressHandler" >
-        </div>
+        <input id="inputfield" type="text" placeholder="{{placeholder}}" class="select-selection" on-keydown="keydownHandler" on-keyup="keypressHandler" >
+        <div id="open-button" on-click="buttonClick">&#xe7bc;</div>
       </template>
     </dom-module>
 
