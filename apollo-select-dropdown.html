@@ -77,23 +77,28 @@
       Polymer({
         is: "apollo-select-dropdown",
         properties: {
-          value: { type: String },
+          value: {
+            type: String
+          },
           values: {
             type: String,
+            notify: true,
             observer: 'valuesChanged'
           },
           search: {
             type: String,
             observer: 'searchChanged'
           },
+          filteredValues: {
+            type: Array,
+            value: function() { return []; }
+          },
           apolloselect: {
             type: Object,
           }
+
         },
         closeJob: null,
-        created: function() {
-          this.filteredValues = [];
-        },
         selectItemWithText: function(text){
           var selectedItems = this.$.dropdown.getElementsByClassName("selected");
           for (var i = 0; i < selectedItems.length; i++) {
