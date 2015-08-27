@@ -9,7 +9,7 @@
   <body>
     <dom-module id="apollo-select">
       <style>
-        #apolloselect {
+        :host {
           font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif;
           font-size: 12px;
           width:185px;
@@ -18,12 +18,10 @@
         }
       </style>
       <template>
-        <div id="apolloselect">
-          <apollo-select-field id="field" value="{{value}}" placeholder="{{placeholder}}" on-open-button="toggleOpen" on-navigate="navigate" on-close="close" on-esc-pressed="stateEscPressed" on-search="search"></apollo-select-field>
-          <apollo-select-dropdown id="dropdown" value="{{value}}" values="{{values}}" apolloselect="{{this.$.apolloselect}}" on-reset-search-value="resetFieldValue" on-value-selected="userSelectedValue" on-close="close" on-display="setDisplayValue" on-navigate-hover="stateNavigate">
-            <content></content>
-          </apollo-select-dropdown>
-        </div>
+        <apollo-select-field id="field" value="{{value}}" placeholder="{{placeholder}}" on-open-button="toggleOpen" on-navigate="navigate" on-close="close" on-esc-pressed="stateEscPressed" on-search="search"></apollo-select-field>
+        <apollo-select-dropdown id="dropdown" value="{{value}}" values="{{values}}" apolloselect="{{component}}" on-reset-search-value="resetFieldValue" on-value-selected="userSelectedValue" on-close="close" on-display="setDisplayValue" on-navigate-hover="stateNavigate">
+          <content></content>
+        </apollo-select-dropdown>
       </template>
     </dom-module>
 
@@ -33,34 +31,23 @@
         properties: {
           value: {
             type: String,
-            observer: 'valueChanged'
+            notify: true
           },
           values: {
             type: String
           },
           placeholder: {
             type: String,
-            observer: 'placeholderChanged'
           },
-          state: "initial"
+          state: "initial",
+          component: {
+            type: Object,
+            value: function() { return this; }
+          }
         },
-
 
         /** Lifecycle **/
         ready: function() {
-          this.$.dropdown.apolloselect = this.$.apolloselect;
-        },
-
-        /** Property change **/
-        valueChanged: function() {
-          if (this.value) {
-            // Do I need this? Could the index.html notice
-            // the change without firing custom events?
-            this.fire('value-changed', {value : this.value});
-          }
-        },
-        placeholderChanged: function(){
-          this.$.field.placeholder = this.placeholder;
         },
 
         /** Events **/
@@ -116,7 +103,6 @@
            on-close="{{close}}"
            on-display="{{setDisplayValue}}"
            on-navigate-hover="{{stateNavigate}}" */
-
         resetFieldValue: function(){
           this.$.field.resetFieldValue();
         },

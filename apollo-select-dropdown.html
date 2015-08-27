@@ -87,14 +87,12 @@
             observer: 'searchChanged'
           },
           apolloselect: {
-            type: Object
+            type: Object,
           }
         },
-
         closeJob: null,
         created: function() {
           this.filteredValues = [];
-          this.apolloselect = this;
         },
         selectItemWithText: function(text){
           var selectedItems = this.$.dropdown.getElementsByClassName("selected");
