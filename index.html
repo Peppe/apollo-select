@@ -106,7 +106,7 @@
 
 
     <script type="text/javascript">
-      window.onload = function() {
+     window.addEventListener('WebComponentsReady', function(e) {
         var pSelectJS = document.querySelector('#section-javascript apollo-select')
         pSelectJS.values = [
           '\u00a0',
@@ -203,7 +203,7 @@
           "bar",
           "baz"
         ];
-      };
+      });
       /*document.querySelector('#section-datefield p-date-field').placeholder = "select a value";*/
       /*document.querySelector('#section-light-dom apollo-select').addEventListener('value-changed', function(e) {
         document.querySelector('#section-light-dom span').innerHTML='Value: ' + e.detail.value;
