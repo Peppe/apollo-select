@@ -6,6 +6,7 @@
     "Jens Jansson <jens.jansson@vaadin.com>"
   ],
   "license": "CC-BY-ND-4.0",
+  "main": "apollo-select.html",
   "ignore": [
     "**/.*",
     "node_modules",
