@@ -1,16 +1,27 @@
 {
   "name": "apollo-select",
-  "version": "0.0.0",
+  "description": "Select component with filtering and keyboard navigation",
+  "version": "1.0.0",
   "authors": [
     "Jens Jansson <jens.jansson@vaadin.com>"
   ],
-  "private": true,
+  "license": "CC-BY-ND-4.0",
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "test",
     "tests"
+  ],
+  "keywords": [
+    "select",
+    "dropdown",
+    "filter",
+    "keyboard"
+  ],
+  "ignore": [
+  "**/.*",
+  "bower_components",
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#v1.0.9",
