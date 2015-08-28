@@ -21,7 +21,7 @@
   ],
   "ignore": [
   "**/.*",
-  "bower_components",
+  "bower_components"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#v1.0.9",
