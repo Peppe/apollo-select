@@ -108,7 +108,7 @@
 
 
     <script type="text/javascript">
-      window.onload = function() {
+      window.addEventListener('WebComponentsReady', function(e) {
         var pSelectJS = document.querySelector('#section-javascript apollo-select')
         pSelectJS.values = [
           '\u00a0',
@@ -214,7 +214,7 @@
           "bar",
           "baz"
         ];
-      };
+      });
 
 
 
